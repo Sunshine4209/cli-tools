@@ -1,0 +1,8 @@
+# Ignore the IntelliJ output folder
+out/
+
+# Ignore Gradle-specific files
+.gradle/
+build/
+!gradle-wrapper.jar
+.gradletasknamecache
