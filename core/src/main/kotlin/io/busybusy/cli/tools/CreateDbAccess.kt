@@ -5,18 +5,14 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
+import javax.inject.Inject
 
 
 //create-db-access --access-level=admin sunshine
-class CreateDbAccess (val createUser: CreateSQLUser) : CliktCommand(name = "create-db-access") {
+class CreateDbAccess
+@Inject constructor(private val createUser: CreateSQLUser) {
 
-    val access by option("--access-level", help="each choice includes access level of the previous one. Default `read`")
-            .choice("read", "write", "alter")
-            .default("read")
-
-    val username by argument(name = "username", help="username you want to use")
-
-    override fun run() {
+    fun run(access: String, username: String) {
 
         when (access) {
 

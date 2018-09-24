@@ -1,11 +1,18 @@
 package io.busybusy.cli.tools
 
 import com.mysql.cj.jdbc.MysqlDataSource
+import dagger.Module
+import dagger.Provides
 import java.net.URI
+import javax.inject.Singleton
 
-class DatabaseModule(val url: URI) {
-    public val dataSource by lazy {
-        MysqlDataSource().apply {
+@Module
+class DatabaseModule(private val url: URI) {
+
+    @Provides
+    @Singleton
+    fun provideDataSource(): MysqlDataSource {
+        return MysqlDataSource().apply {
             setUrl("jdbc:$url")
             user = url.userInfo.substringBefore(':')
             setPassword(url.userInfo.substringAfter(':'))
@@ -14,11 +21,5 @@ class DatabaseModule(val url: URI) {
             databaseName = url.path
             serverName = url.host
         }
-    }
-
-    companion object {
-        fun fromEnv() = DatabaseModule(
-                url = URI(System.getenv("DATABASE_URL") ?: error("Could not get: DATABASE_URL"))
-        )
     }
 }

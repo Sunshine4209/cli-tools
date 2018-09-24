@@ -1,12 +1,16 @@
 package io.busybusy.cli.tools
 
+import java.net.URI
+
 
 fun main(args: Array<String>)
 {
-
-    val databaseModule = DatabaseModule.fromEnv()
-    val dataSource = databaseModule.dataSource
-
-    CreateDbAccess(CreateSQLUser(dataSource)).main(args)
+    DaggerCliComponent.builder()
+        .databaseModule(
+            DatabaseModule(
+                URI(System.getenv("DATABASE_URL") ?: error("Could not get: DATABASE_URL"))
+            )
+        )
+        .build().cli().main(args)
 }
 

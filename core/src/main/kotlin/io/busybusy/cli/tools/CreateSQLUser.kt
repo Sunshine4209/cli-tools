@@ -3,9 +3,11 @@ package io.busybusy.cli.tools
 import com.mysql.cj.jdbc.MysqlDataSource
 import java.sql.PreparedStatement
 import java.sql.SQLException
+import javax.inject.Inject
 import kotlin.system.exitProcess
 
-class CreateSQLUser(val dataSource: MysqlDataSource) {
+class CreateSQLUser
+@Inject constructor(private val dataSource: MysqlDataSource) {
 
     private val password = PasswordGenerator().generatePassword()
     private val schema = if (dataSource.databaseName.substringAfter('/') == "") "*" else dataSource.databaseName.substringAfter('/')
@@ -44,7 +46,7 @@ class CreateSQLUser(val dataSource: MysqlDataSource) {
 
     private fun createUser(username: String)
     {
-        val query = "CREATE USER ?@? IDENTIFIED BY ?; "
+        val query = "CREATE USER ?@? IDENTIFIED BY ?;"
         val parameters = arrayOf(username, host, password)
         val stmt = prepareStatement(query, parameters)
         val successResponse = "User $username successfully created. Password for this user is $password. Please keep this password for your records"
